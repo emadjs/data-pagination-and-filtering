@@ -37,7 +37,7 @@ const createStudent = (student) => {
 
 const createElement = (tagName, classList = "", givenText = "", attr = {}) => {
     const element = document.createElement(tagName)
-    element.classList.add(...classList)
+    if (classList) element.classList.add(...classList)
     const text = document.createTextNode(givenText)
     element.appendChild(text)
     if (Object.keys(attr).length !== 0) {
@@ -51,5 +51,21 @@ const createElement = (tagName, classList = "", givenText = "", attr = {}) => {
 
 showPage(data, 1, itemPerPage)
 
+const addPagination = (list) => {
+    const pagesNum = Math.floor(list.length / 9)
+    const ul = document.querySelector(".link-list")
+    ul.innerHTML = ""
+    let i = 0
+    while (i < pagesNum) {
+        const li = createElement("li")
+        const button = createElement("button", "", i + 1, {type: "button"})
+        li.appendChild(button)
+        ul.appendChild(li)
+        i += 1
+    }
+    const firstButton = ul.firstElementChild.firstElementChild.classList.add("active")
 
+}
 addPagination(data)
+
+
