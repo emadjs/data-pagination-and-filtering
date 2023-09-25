@@ -1,15 +1,21 @@
-const itemPerPage = 9
-const showPage = (list, page, itemPerPage) => {
-    let startIndex = page * itemPerPage - itemPerPage
-    let endIndex = page * itemPerPage
-    const studentList = document.querySelector(".student-list")
-    studentList.innerHTML = ""
-    list.forEach((item, index, list) => {
-        if (index >= startIndex && index < endIndex) {
-            studentList.insertAdjacentElement("beforeend", createStudent(item))
-        }
+const studentList = document.querySelector(".student-list")
+const linkList = document.querySelector(".link-list")
+const header = document.querySelector(".header")
+const studentsPerPage = 9
 
-    })
+const createElement = (tagName, classList = "", givenText = "", attr = {}) => {
+    const element = document.createElement(tagName)
+    if (classList) element.classList.add(...classList)
+    if (givenText) {
+        const text = document.createTextNode(givenText)
+        element.appendChild(text)
+    }
+    if (Object.keys(attr).length !== 0) {
+        for (let attribute in attr) {
+            element.setAttribute(attribute, attr[attribute])
+        }
+    }
+    return element
 }
 
 const createStudent = (student) => {
@@ -35,48 +41,46 @@ const createStudent = (student) => {
     return li
 }
 
-const createElement = (tagName, classList = "", givenText = "", attr = {}) => {
-    const element = document.createElement(tagName)
-    if (classList) element.classList.add(...classList)
-    const text = document.createTextNode(givenText)
-    element.appendChild(text)
-    if (Object.keys(attr).length !== 0) {
-        for (let attribute in attr) {
-            element.setAttribute(attribute, attr[attribute])
+const showPage = (list, page) => {
+    const startIndex = (page * studentsPerPage) - studentsPerPage
+    const endIndex = page * studentsPerPage
+    studentList.innerHTML = ""
+    list.forEach((item, index, list) => {
+        if (index >= startIndex && index < endIndex) {
+            studentList.insertAdjacentElement("beforeend", createStudent(item))
         }
-    }
-
-    return element
+    })
 }
-
-showPage(data, 1, itemPerPage)
 
 const addPagination = (list) => {
-    const pagesNum = Math.ceil(list.length / 9)
-    const ul = document.querySelector(".link-list")
-    ul.innerHTML = ""
-    let i = 0
-    while (i < pagesNum) {
+    const numOfPages = Math.ceil(list.length / studentsPerPage)
+    linkList.innerHTML = ""
+    let i = 1
+    while (i <= numOfPages) {
         const li = createElement("li")
-        const button = createElement("button", "", i + 1, {type: "button"})
+        const button = createElement("button", "", i, {type: "button"})
         li.appendChild(button)
-        ul.appendChild(li)
+        linkList.appendChild(li)
         i += 1
     }
-    const firstButton = ul.firstElementChild.firstElementChild.classList.add("active")
+    const firstButton = linkList.firstElementChild.firstElementChild.classList.add("active")
+    linkList.addEventListener("click", (e) => {
+        if (e.target.tagName === "BUTTON") {
+            const clickedButton = e.target
+            const activeButton = document.querySelector(".active")
 
+            activeButton.classList.remove("active")
+            clickedButton.classList.add("active")
+
+            showPage(list, clickedButton.textContent)
+        }
+    })
 }
-addPagination(data)
+
+const handler = (data) => {
+    showPage(data, 1)
+    addPagination(data)
+}
 
 
-const linkList = document.querySelector(".link-list")
-linkList.addEventListener("click", (e) => {
-    console.log(e.target.tagName)
-    if (e.target.tagName === "BUTTON") {
-        const activeButton = document.querySelector(".active")
-        activeButton.classList.remove("active")
-        clickedButton = e.target
-        clickedButton.classList.add("active")
-        showPage(data, clickedButton.textContent, itemPerPage)
-    }
-})
+handler(data)
