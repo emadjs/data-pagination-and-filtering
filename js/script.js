@@ -76,6 +76,16 @@ const addPagination = (list) => {
         }
     })
 }
+
+const handler = (data) => {
+    showPage(data, 1)
+    addPagination(data)
+}
+const noResults = () => {
+    const noResults = "<p class='no-results'>No results found</p>"
+    studentList.innerHTML = noResults
+    linkList.innerHTML = ""
+}
 const addSearchBar = () => {
     const label = createElement("label", ["student-search"], null, {for: "search"})
     const span = createElement("span", null, "Search by name")
@@ -91,19 +101,11 @@ const addSearchBar = () => {
 
     const searchInput = document.querySelector("#search")
     searchInput.addEventListener("keyup", (e) => {
-        const filteredList = data.filter(item => item.name.first.toLowerCase().includes(e.target.value) || item.name.last.toLowerCase().includes(e.target.value))
+        const filteredList = data.filter(item => item.name.first.toLowerCase().includes(e.target.value.toLowerCase()) || item.name.last.toLowerCase().includes(e.target.value.toLowerCase()))
         filteredList.length !== 0 ? handler(filteredList) : noResults()
     })
 }
-const handler = (data) => {
-    showPage(data, 1)
-    addPagination(data)
-}
 
-const noResults = () => {
-    const noResults = "<p class='no-results'>No results found</p>"
-    studentList.innerHTML = noResults
-    linkList.innerHTML = ""
-}
-handler(data)
+
 addSearchBar()
+handler(data)
