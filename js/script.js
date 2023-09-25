@@ -5,7 +5,7 @@ const showPage = (list, page, itemPerPage) => {
     const studentList = document.querySelector(".student-list")
     studentList.innerHTML = ""
     list.forEach((item, index, list) => {
-        if (index > startIndex && index < endIndex) {
+        if (index >= startIndex && index < endIndex) {
             studentList.insertAdjacentElement("beforeend", createStudent(item))
         }
 
@@ -52,7 +52,7 @@ const createElement = (tagName, classList = "", givenText = "", attr = {}) => {
 showPage(data, 1, itemPerPage)
 
 const addPagination = (list) => {
-    const pagesNum = Math.floor(list.length / 9)
+    const pagesNum = Math.ceil(list.length / 9)
     const ul = document.querySelector(".link-list")
     ul.innerHTML = ""
     let i = 0
@@ -69,3 +69,14 @@ const addPagination = (list) => {
 addPagination(data)
 
 
+const linkList = document.querySelector(".link-list")
+linkList.addEventListener("click", (e) => {
+    console.log(e.target.tagName)
+    if (e.target.tagName === "BUTTON") {
+        const activeButton = document.querySelector(".active")
+        activeButton.classList.remove("active")
+        clickedButton = e.target
+        clickedButton.classList.add("active")
+        showPage(data, clickedButton.textContent, itemPerPage)
+    }
+})
